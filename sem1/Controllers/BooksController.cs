@@ -2,20 +2,37 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using sem1.Models;
+using System.Diagnostics;
 
 public class BooksController : Controller
 {
     private readonly LibraryContext _context;
+    private readonly ILogger<BooksController> _logger;
 
-    public BooksController(LibraryContext context)
+    public BooksController(
+        LibraryContext context,
+        ILogger<BooksController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
-    // GET: BOOKS
-    public async Task<IActionResult> Index()    
+    // GET: Books
+    public async Task<IActionResult> Index()
     {
-        return View(await _context.Book.ToListAsync());
+        var sw = Stopwatch.StartNew();
+
+        var rows = await _context.Book
+            .Select(b => new BookRow(
+                b.Title,
+                b.Author!.FirstName + " " + b.Author.LastName,
+                b.Orders.Count
+            ))
+            .ToListAsync();
+
+        _logger.LogInformation("Index: {Ms} ms", sw.ElapsedMilliseconds);
+
+        return View(rows);
     }
 
     // GET: BOOKS/Details/5
