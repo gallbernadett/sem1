@@ -74,6 +74,9 @@ namespace sem1.Migrations
                     b.Property<int?>("GenreID")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsFeatured")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("Price")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");

@@ -11,6 +11,8 @@ namespace sem1.Models
         [Precision(10, 2)]
         public decimal Price { get; set; }
 
+        public bool IsFeatured { get; set; }
+
         public string? Description { get; set; }
 
         public int? AuthorID { get; set; }

@@ -78,52 +78,39 @@ public class BooksController : Controller
     // GET: BOOKS/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
+        if (id == null) return NotFound();
 
         var book = await _context.Book.FindAsync(id);
-        if (book == null)
+
+        if (book == null) return NotFound();
+
+        var vm = new BookEditViewModel
         {
-            return NotFound();
-        }
-        return View(book);
+            ID = book.ID,
+            Title = book.Title,
+            Price = book.Price,
+            AuthorID = book.AuthorID,
+            GenreID = book.GenreID
+        };
+
+        return View(vm);
     }
 
     // POST: BOOKS/Edit/5
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("ID,Title,Author,Price,GenreID,Genre")] Book book)
+    // APARAREA 3 - Bind
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(
+        int id,
+        [Bind("ID,Title,Price,AuthorID,GenreID")] Book book)
     {
-        if (id != book.ID)
-        {
-            return NotFound();
-        }
+        if (id != book.ID) return NotFound();
 
-        if (ModelState.IsValid)
-        {
-            try
-            {
-                _context.Update(book);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BookExists(book.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return RedirectToAction(nameof(Index));
-        }
-        return View(book);
+        _context.Update(book);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Index));
     }
 
     // GET: BOOKS/Delete/5
