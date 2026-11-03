@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using sem1.Data;
+using Microsoft.Extensions.ML;
+using sem1.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("LibraryContext") ?? throw new InvalidOperationException("Connection string 'LibraryContext' not found.");
@@ -8,7 +10,12 @@ builder.Services.AddDbContext<LibraryContext>(options => options.UseSqlServer(co
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services
+    .AddPredictionEnginePool<BookRating, BookRatingPrediction>()
+    .FromFile(
+        modelName: "BookRecommender",
+        filePath: "MLModels/BookRecommender.zip",
+        watchForChanges: true);
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {

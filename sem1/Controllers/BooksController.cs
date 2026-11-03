@@ -99,19 +99,28 @@ public class BooksController : Controller
     // POST: BOOKS/Edit/5
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    // APARAREA 3 - Bind
-    [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(
-        int id,
-        [Bind("ID,Title,Price,AuthorID,GenreID")] Book book)
-    {
-        if (id != book.ID) return NotFound();
 
-        _context.Update(book);
+    // APARAREA 2 - ViewModel (varianta finala)
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, BookEditViewModel vm)
+    {
+        if (id != vm.ID) return NotFound();
+
+        if (!ModelState.IsValid) return View(vm);
+
+        var book = await _context.Book.FindAsync(id);
+        if (book is null) return NotFound();
+
+        book.Title = vm.Title;
+        book.Price = vm.Price;
+        book.AuthorID = vm.AuthorID;
+        book.GenreID = vm.GenreID;
+
         await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
     }
+
 
     // GET: BOOKS/Delete/5
     public async Task<IActionResult> Delete(int? id)
