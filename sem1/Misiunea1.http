@@ -1,0 +1,73 @@
+@host = https://localhost:7236
+
+### 1. 
+GET {{host}}/api/v2/books
+
+### 2. 
+GET {{host}}/api/v2/books?genre=SF
+
+### 3. 
+GET {{host}}/api/v2/books?genre=SF&page=2
+
+### 4. 
+GET {{host}}/api/v2/books/3
+
+### 5. 
+GET {{host}}/api/v2/books/999
+
+### 6. 
+POST {{host}}/api/v2/books
+Content-Type: application/json
+
+{ "title": "Carte de test", "price": 25 }
+
+### 7. Trimiteți EXACT aceeași cerere încă o dată
+POST {{host}}/api/v2/books
+Content-Type: application/json
+
+{ "title": "Carte de test", "price": 25 }
+
+### 8. (înlocuiți 41 cu ID-ul vostru de la cererea 6)
+PATCH {{host}}/api/v2/books/41
+Content-Type: application/json
+
+{ "price": 30 }
+
+### 9. (înlocuiți 41 cu ID-ul vostru de la cererea 6)
+DELETE {{host}}/api/v2/books/41
+
+### 10. Trimiteți EXACT aceeași cerere încă o dată
+DELETE {{host}}/api/v2/books/41
+
+### 11. 
+POST {{host}}/api/v2/books
+Content-Type: application/json
+
+{ "title": "", "price": -5 }
+
+### 12. Cartile SF - Controller API
+GET {{host}}/api/books?genre=SF
+
+### 13. Cartea 3 - Controller API
+GET {{host}}/api/books/3
+
+### Validare 12. Doar pretul este gresit
+POST {{host}}/api/v2/books
+Content-Type: application/json
+
+{ "title": "Carte corectă", "price": -5 }
+
+### Validare 13. Pret gresit la modificare
+PATCH {{host}}/api/v2/books/3
+Content-Type: application/json
+
+{ "price": 0 }
+
+### Misiunea 3 - Experimentul 1: Recomandare AI
+POST {{host}}/api/v2/books/3/pitch
+
+### Misiunea 3 - Experimentul 2: Fara descriere
+POST {{host}}/api/v2/books/37/pitch
+
+### Misiunea 3 - Experimentul 3: Intrebare AI
+GET {{host}}/api/v2/ask?q=Ce%20c%C4%83r%C8%9Bi%20de%20Liviu%20Rebreanu%20ave%C8%9Bi%20%C3%AEn%20bibliotec%C4%83%20%C8%99i%20sunt%20disponibile%3F
